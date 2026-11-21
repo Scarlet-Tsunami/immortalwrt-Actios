@@ -168,6 +168,18 @@ jobs:
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
+    - name: Check libffi before install
+      run: |
+        cd openwrt
+        echo "===== Search libffi ====="
+        find package feeds -path "*/libffi/Makefile" -print
+
+        echo "===== Check packages feed ====="
+        ls -la feeds/packages/libs/libffi 2>/dev/null || true
+
+        echo "===== Check glib2 dependency ====="
+        grep -n -E 'libffi|DEPENDS' feeds/packages/libs/glib2/Makefile || true
+
     - name: Remove conflicting packages from smpackage
       run: |
         # 删除 small-package 中与系统冲突的包，避免编译报错（官方推荐操作）
@@ -175,6 +187,19 @@ jobs:
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a -f
+
+    - name: Check libffi after install
+      run: |
+        cd openwrt
+
+        echo "===== Installed libffi ====="
+        ls -la package/feeds/packages/libffi 2>/dev/null || true
+
+        echo "===== Feed package list ====="
+        ./scripts/feeds list -a | grep -i libffi || true
+
+        echo "===== Search libffi Makefile ====="
+        find package feeds -path "*/libffi/Makefile" -print
 
     - name: Load custom configuration
       run: |
@@ -257,11 +282,15 @@ jobs:
         find dl -size -1024c -exec rm -f {} \;
 
     - name: 查看 openwrt 目录
-      run: ls -la openwrt/
-      
-           ls -l .config
-      
-           ls -la openwrt/.config
+      run: |
+        echo "===== OpenWrt directory ====="
+        ls -la openwrt/
+
+        echo "===== Current directory config ====="
+        ls -l .config
+
+        echo "===== OpenWrt config ====="
+        ls -la openwrt/.config
 
  
     - name: 自动上传最新源码生成.config编译配置
