@@ -168,6 +168,15 @@ jobs:
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
+    - name: Show feeds configuration
+      run: |
+        cd openwrt
+        echo "===== feeds.conf.default ====="
+        cat feeds.conf.default
+
+        echo "===== feeds directories ====="
+        ls -la feeds/
+
     - name: Check libffi before install
       run: |
         cd openwrt
