@@ -42,6 +42,11 @@ else
   echo "✅ 树中已有 libffi：$(find package feeds -path '*/libffi/Makefile' -print)"
 fi
 
+# USB OTG 角色切换插件
+echo 'src-git usbrole https://github.com/wvivi5/luci-app-usbrole.git' >> feeds.conf.default
+# 更新并安装 USB OTG 角色切换插件
+#./scripts/feeds update usbrole
+#./scripts/feeds install luci-app-usbrole
 
 # 启用 IPv4 策略路由（直接写入内核 platform config，绕过 make defconfig 的依赖检查）
 # CONFIG_KERNEL_IP_ADVANCED_ROUTER 在 OpenWrt Config.in 中无对应 wrapper，必须用此方式
